@@ -11,7 +11,7 @@ import DeleteButton from './DeleteButton'
 
 // Dynamic segments not included in generateStaticParams are generated on demand
 // if false return 404 page
-export const dynamicParams = true
+export const dynamicParams = false
 
 export async function generateStaticParams() {
   const evts = await fetch(`${API_URL}/api/events/`).then(res => res.json())
