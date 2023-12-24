@@ -8,6 +8,9 @@ const nextConfig = {
       return `${new Date().getTime()}`
     }
   },
+  images: {
+    domains: ['res.cloudinary.com'],
+  },
 }
 
 module.exports = nextConfig
