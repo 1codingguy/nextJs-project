@@ -16,11 +16,12 @@ export interface EventItemProps {
 }
 
 const EventItem = ({ evt }: { evt: EventItemProps }) => {
+  const img = evt.image.data.attributes.formats.medium.url
   return (
     <div className={styles.event}>
       <div className={styles.img}>
         <Image
-          src={evt.image ? evt.image : '/images/event-default.png'}
+          src={img ? img : '/images/event-default.png'}
           width={170}
           height={100}
           alt='event image'

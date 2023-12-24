@@ -14,32 +14,40 @@ import DeleteButton from './DeleteButton'
 export const dynamicParams = false
 
 export async function generateStaticParams() {
-  const evts = await fetch(`${API_URL}/api/events/`).then(res => res.json())
+  const evts = await fetch(`${API_URL}/api/events?populate=*`).then(res =>
+    res.json()
+  )
 
-  const returnItem = evts.events.events.map((event: EventItemProps) => ({
-    slug: event.slug,
-  }))
+  const returnItem = evts.data.map(
+    ({ attributes }: { attributes: EventItemProps }) => ({
+      slug: attributes.slug,
+    })
+  )
 
   return returnItem
 }
 
 //
-async function getEvent(slug: string) {
-  const res = await fetch(`${API_URL}/api/events/${slug}`)
-  const { event } = await res.json()
-  return event
+async function getEventData(slug: string) {
+  const res = await fetch(
+    `${API_URL}/api/events?filters[slug][$eq]=${slug}&populate=*`
+  ).then(res => res.json())
+  return res.data[0]
 }
 
 const EventPage = async ({ params }: { params: { slug: string } }) => {
   // `param` is provided by Next.js in this default function signature.
   // Not in getEvent()
 
-  const event: EventItemProps = await getEvent(params.slug)
+  const { id, attributes: event } = await getEventData(params.slug)
+
+  const description = event.description[0].children[0].text
+  const img = event.image.data.attributes.formats.medium.url
 
   return (
     <div className={styles.event}>
       <div className={styles.controls}>
-        <Link href={`/events/edit/${event.id}`}>
+        <Link href={`/events/edit/${id}`}>
           <FaPencilAlt /> Edit Event
         </Link>
         <DeleteButton />
@@ -49,9 +57,9 @@ const EventPage = async ({ params }: { params: { slug: string } }) => {
         {event.date} at {event.time}
       </span>
       <h1>{event.name}</h1>
-      {event.image && (
+      {img && (
         <div className={styles.image}>
-          <Image src={event.image} width={960} height={600} alt='event image' />
+          <Image src={img} width={960} height={600} alt='event image' />
         </div>
       )}
 
@@ -59,7 +67,7 @@ const EventPage = async ({ params }: { params: { slug: string } }) => {
       <p>{event.performers}</p>
 
       <h3>Descriptions:</h3>
-      <p>{event.description}</p>
+      <p>{description}</p>
 
       <h3>Venue: {event.venue}</h3>
       <p>{event.address}</p>
