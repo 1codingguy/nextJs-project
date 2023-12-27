@@ -1,14 +1,16 @@
 import { API_URL } from '@config/index'
 import EventItem, { EventItemProps } from '@components/EventItem'
+import { revalidateTag } from 'next/cache'
 
 async function getEvents() {
-  const res = await fetch(`${API_URL}/api/events?populate=*`).then(res =>
-    res.json()
-  )
+  const res = await fetch(`${API_URL}/api/events?populate=*`, {
+    next: { tags: ['all-events'] },
+  }).then(res => res.json())
   return res.data
 }
 
 export default async function EventsPage() {
+  revalidateTag('all-events')
   const data = await getEvents()
 
   return (

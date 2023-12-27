@@ -16,7 +16,7 @@ export interface EventItemProps {
 }
 
 const EventItem = ({ evt }: { evt: EventItemProps }) => {
-  const img = evt.image.data.attributes.formats.medium.url
+  const img = evt?.image?.data?.attributes?.formats?.medium?.url
   return (
     <div className={styles.event}>
       <div className={styles.img}>

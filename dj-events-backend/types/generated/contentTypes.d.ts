@@ -368,6 +368,7 @@ export interface ApiEventEvent extends Schema.CollectionType {
     singularName: 'event';
     pluralName: 'events';
     displayName: 'events';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -380,13 +381,13 @@ export interface ApiEventEvent extends Schema.CollectionType {
     date: Attribute.DateTime;
     time: Attribute.String;
     performers: Attribute.String;
-    description: Attribute.Blocks;
     image: Attribute.Media;
     user: Attribute.Relation<
       'api::event.event',
       'manyToOne',
       'plugin::users-permissions.user'
     >;
+    description: Attribute.Text;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

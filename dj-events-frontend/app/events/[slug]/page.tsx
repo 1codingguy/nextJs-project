@@ -1,3 +1,4 @@
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { FaTimes, FaPencilAlt } from 'react-icons/fa'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -11,12 +12,12 @@ import DeleteButton from './DeleteButton'
 
 // Dynamic segments not included in generateStaticParams are generated on demand
 // if false return 404 page
-export const dynamicParams = false
+export const dynamicParams = true
 
 export async function generateStaticParams() {
-  const evts = await fetch(`${API_URL}/api/events?populate=*`).then(res =>
-    res.json()
-  )
+  const evts = await fetch(`${API_URL}/api/events?populate=*`, {
+    next: { tags: ['slug'] },
+  }).then(res => res.json())
 
   const returnItem = evts.data.map(
     ({ attributes }: { attributes: EventItemProps }) => ({
@@ -39,10 +40,11 @@ const EventPage = async ({ params }: { params: { slug: string } }) => {
   // `param` is provided by Next.js in this default function signature.
   // Not in getEvent()
 
+  // refetch the data, instead of using those cached
+  revalidateTag('slug')
   const { id, attributes: event } = await getEventData(params.slug)
 
-  const description = event.description[0].children[0].text
-  const img = event.image.data.attributes.formats.medium.url
+  const img = event?.image?.data?.attributes?.formats?.medium?.url
 
   return (
     <div className={styles.event}>
@@ -67,7 +69,7 @@ const EventPage = async ({ params }: { params: { slug: string } }) => {
       <p>{event.performers}</p>
 
       <h3>Descriptions:</h3>
-      <p>{description}</p>
+      <p>{event.description}</p>
 
       <h3>Venue: {event.venue}</h3>
       <p>{event.address}</p>

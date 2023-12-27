@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { API_URL } from '@/app/config'
 import styles from './AddEventPage.module.css'
+import generateSlug from '@/app/utils/generateSlug'
 
 const fields = [
   'name',
@@ -47,13 +48,19 @@ const AddEventPage = () => {
       return
     }
 
+    // Because Strapi V4 has a bug with generating slugs (slugs not generated on create)
+    // Below two lines generate a slug from the name field
+    // No check for uniqueness is done, only a workaround for now
+    const slug = generateSlug(values.name)
+    const valuesWithSlug = { ...values, slug }
+
     const res = await fetch(`${API_URL}/api/events`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        data: values,
+        data: valuesWithSlug,
       }),
     })
 
@@ -61,8 +68,7 @@ const AddEventPage = () => {
       toast.error('Something Went Wrong')
     } else {
       const evt = await res.json()
-      console.log(evt)
-      // router.push(`/events/${evt.slug}`)
+      router.push(`/events/${slug}`)
     }
   }
 
