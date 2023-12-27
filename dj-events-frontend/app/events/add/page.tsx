@@ -1,6 +1,8 @@
 'use client'
 
-import { useState, Fragment } from 'react'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { API_URL } from '@/app/config'
@@ -35,9 +37,33 @@ const AddEventPage = () => {
 
   const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log(values)
+
+    const hasEmptyFields = Object.values(values).some(value => value === '')
+
+    if (hasEmptyFields) {
+      toast.error('Please fill in all fields')
+      return
+    }
+
+    const res = await fetch(`${API_URL}/api/events`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        data: values,
+      }),
+    })
+
+    if (!res.ok) {
+      toast.error('Something Went Wrong')
+    } else {
+      const evt = await res.json()
+      console.log(evt)
+      // router.push(`/events/${evt.slug}`)
+    }
   }
 
   const handleInputChange = (
@@ -51,6 +77,7 @@ const AddEventPage = () => {
     <>
       <Link href='/events'>Go Back</Link>
       <h1>Add Event</h1>
+      <ToastContainer />
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.grid}>
           {fields.slice(0, -1).map(field => (
