@@ -1,11 +1,12 @@
-import { revalidatePath, revalidateTag } from 'next/cache'
-import { FaTimes, FaPencilAlt } from 'react-icons/fa'
+import { revalidateTag } from 'next/cache'
+import { FaPencilAlt } from 'react-icons/fa'
 import Link from 'next/link'
 import Image from 'next/image'
 import { EventItemProps } from '@/app/components/EventItem'
 import { API_URL } from '@/app/config'
 import styles from './Event.module.css'
 import DeleteButton from './DeleteButton'
+import { useRouter } from 'next/router'
 
 // Need dynamic metadata here
 // https://nextjs.org/docs/app/building-your-application/optimizing/metadata
@@ -40,9 +41,11 @@ const EventPage = async ({ params }: { params: { slug: string } }) => {
   // `param` is provided by Next.js in this default function signature.
   // Not in getEvent()
 
-  // refetch the data, instead of using those cached
+  // refetch the data, instead of uses ing those cached
   revalidateTag('slug')
-  const { id, attributes: event } = await getEventData(params.slug)
+  const res = await getEventData(params.slug)
+  const { attributes: event } = res
+  const id: number = res.id
 
   const img = event?.image?.data?.attributes?.formats?.medium?.url
 
@@ -52,7 +55,7 @@ const EventPage = async ({ params }: { params: { slug: string } }) => {
         <Link href={`/events/edit/${id}`}>
           <FaPencilAlt /> Edit Event
         </Link>
-        <DeleteButton />
+        <DeleteButton id={id} />
       </div>
 
       <span>
