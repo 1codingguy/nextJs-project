@@ -14,6 +14,10 @@ const LoginPage = () => {
 
   const { login, error } = useAuthContext()
 
+  useEffect(() => {
+    error && toast.error(error)
+  }, [error])
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     login({ email, password })
@@ -21,10 +25,10 @@ const LoginPage = () => {
 
   return (
     <div className={styles.auth}>
+      <ToastContainer />
       <h1>
         <FaUser /> Login
       </h1>
-      <ToastContainer />
       <form onSubmit={e => handleSubmit(e)}>
         <div>
           <label htmlFor='email'>Email Address</label>
