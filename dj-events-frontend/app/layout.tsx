@@ -5,6 +5,7 @@ import styles from './layout.module.css'
 import Header from '@components/Header'
 import Footer from '@components/Footer'
 import Showcase from '@components/Showcase'
+import { AuthContextProvider } from './context/AuthContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,10 +22,12 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={inter.className}>
-        <Header />
-        <Showcase />
-        <div className={styles.container}>{children}</div>
-        <Footer />
+        <AuthContextProvider>
+          <Header />
+          <Showcase />
+          <div className={styles.container}>{children}</div>
+          <Footer />
+        </AuthContextProvider>
         <div id='modal-root'></div>
       </body>
     </html>
