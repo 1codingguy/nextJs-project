@@ -25,6 +25,7 @@ export default function RootLayout({
         <Showcase />
         <div className={styles.container}>{children}</div>
         <Footer />
+        <div id='modal-root'></div>
       </body>
     </html>
   )

@@ -7,10 +7,11 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { API_URL } from '@/app/config'
 import styles from '../../add/AddEventPage.module.css'
-import generateSlug from '@/app/utils/generateSlug'
 import moment from 'moment'
+import Modal from '@/app/components/Modal'
+import { API_URL } from '@/app/config'
+import generateSlug from '@/app/utils/generateSlug'
 
 const fields = [
   'name',
@@ -48,13 +49,13 @@ const EditEventPage = ({ params }: { params: { id: string } }) => {
   const [imagePreview, setImagePreview] = useState<string | undefined>(
     undefined
   )
+  const [showModal, setShowModal] = useState(false)
 
   const router = useRouter()
 
   useEffect(() => {
     if (params.id) {
       getEvent(params.id).then(data => {
-        console.log(data.attributes)
         const {
           name,
           performers,
@@ -178,10 +179,14 @@ const EditEventPage = ({ params }: { params: { id: string } }) => {
       )}
 
       <div>
-        <button className='btn-secondary'>
+        <button className='btn-secondary' onClick={() => setShowModal(true)}>
           <FaImage /> Set Image
         </button>
       </div>
+
+      <Modal show={showModal} onClose={() => setShowModal(false)}>
+        IMAGE UPLOAD
+      </Modal>
     </>
   )
 }
