@@ -7,11 +7,12 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import styles from '../../add/AddEventPage.module.css'
+import styles from '../../add/Form.module.css'
 import moment from 'moment'
 import Modal from '@/app/components/Modal'
 import { API_URL } from '@/app/config'
 import generateSlug from '@/app/utils/generateSlug'
+import ImageUpload from '@/app/components/ImageUpload'
 
 const fields = [
   'name',
@@ -129,6 +130,18 @@ const EditEventPage = ({ params }: { params: { id: string } }) => {
     setValues({ ...values, [name]: value })
   }
 
+  const imageUploaded = async () => {
+    const res = await fetch(`${API_URL}/api/events/${params.id}?populate=*`, {
+      next: { revalidate: 0 },
+    })
+    const data = await res.json()
+    const img =
+      data?.data?.attributes?.image?.data?.attributes?.formats?.thumbnail?.url
+    const imagePreview = img ? img : '/images/event-default.png'
+    setImagePreview(imagePreview)
+    setShowModal(false)
+  }
+
   return (
     <>
       <Link href='/events'>Go Back</Link>
@@ -185,7 +198,7 @@ const EditEventPage = ({ params }: { params: { id: string } }) => {
       </div>
 
       <Modal show={showModal} onClose={() => setShowModal(false)}>
-        IMAGE UPLOAD
+        <ImageUpload evtId={params.id} imageUploaded={imageUploaded} />
       </Modal>
     </>
   )

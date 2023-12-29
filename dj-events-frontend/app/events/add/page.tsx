@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { API_URL } from '@/app/config'
-import styles from './AddEventPage.module.css'
+import styles from './Form.module.css'
 import generateSlug from '@/app/utils/generateSlug'
 
 const fields = [
