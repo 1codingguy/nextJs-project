@@ -16,7 +16,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     error && toast.error(error)
-  }, [error])
+  })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

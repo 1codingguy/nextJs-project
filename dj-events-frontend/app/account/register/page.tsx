@@ -16,6 +16,12 @@ const RegisterPage = () => {
 
   const { register, error } = useAuthContext()
 
+  useEffect(() => {
+    error && toast.error(error)
+    // not defining return undefined here crashes the app
+    return undefined
+  })
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -71,7 +77,7 @@ const RegisterPage = () => {
           />
         </div>
 
-        <input type='submit' value='Login' className='btn' />
+        <input type='submit' value='Register' className='btn' />
       </form>
 
       <p>

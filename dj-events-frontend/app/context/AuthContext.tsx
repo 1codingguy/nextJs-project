@@ -61,7 +61,19 @@ export const AuthContextProvider = ({
   }, [router])
 
   const register = async ({ userName, email, password }: registerProps) => {
-    console.log({ userName, email, password })
+    const res = await fetch(`${NEXT_URL}/api/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: userName, email, password }),
+    })
+    const data = await res.json()
+
+    if (res.ok) {
+      setUser(data.user)
+      router.push('/')
+    } else {
+      setError(data.message)
+    }
   }
 
   const login = async ({ email: identifier, password }: loginProps) => {
