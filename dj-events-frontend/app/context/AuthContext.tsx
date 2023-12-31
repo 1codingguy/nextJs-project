@@ -42,6 +42,23 @@ export const AuthContextProvider = ({
 }) => {
   const [user, setUser] = useState(null)
   const [error, setError] = useState(null)
+  const router = useRouter()
+
+  useEffect(() => {
+    const checkUserLoggedIn: () => void = async () => {
+      const res = await fetch(`${NEXT_URL}/api/user`)
+      const data = await res.json()
+
+      if (res.ok) {
+        setUser(data.user)
+        router.push('/account/dashboard')
+      } else {
+        setUser(null)
+      }
+    }
+
+    checkUserLoggedIn()
+  }, [router])
 
   const register = async ({ userName, email, password }: registerProps) => {
     console.log({ userName, email, password })
@@ -64,10 +81,6 @@ export const AuthContextProvider = ({
 
   const logout = async () => {
     console.log('logout')
-  }
-
-  const checkUserLoggedIn = async () => {
-    console.log('checkUserLoggedIn')
   }
 
   return (
