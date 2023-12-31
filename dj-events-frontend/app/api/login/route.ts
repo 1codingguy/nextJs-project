@@ -1,5 +1,6 @@
 import { API_URL } from '@/app/config'
 import { NextRequest, NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
 
 type ErrorResponse = {
   data: null
@@ -48,7 +49,19 @@ export async function POST(req: NextRequest) {
 
   if (strapiResponse.ok) {
     if (isSuccessResponse(data)) {
-      // set cookie
+      // does it have to use `cookie` package to serialize the cookie?
+      // what's the diff of serialize and unserialized?
+
+      cookies().set({
+        name: 'jwt',
+        value: data.jwt,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 30 * 24 * 60 * 60,
+        sameSite: 'strict',
+        path: '/',
+      })
+
       return NextResponse.json(
         {
           user: data.user,
