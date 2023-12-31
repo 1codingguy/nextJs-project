@@ -74,13 +74,24 @@ export const AuthContextProvider = ({
 
     if (res.ok) {
       setUser(data.user)
+      router.push('/')
     } else {
       setError(data.message)
     }
   }
 
   const logout = async () => {
-    console.log('logout')
+    const res = await fetch(`${NEXT_URL}/api/logout`, {
+      method: 'POST',
+    })
+    const data = await res.json()
+
+    if (res.ok) {
+      setUser(null)
+      router.push('/')
+    } else {
+      setError(data.message)
+    }
   }
 
   return (

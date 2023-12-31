@@ -32,8 +32,6 @@ export async function GET(req: NextRequest) {
     },
   })
 
-  console.log('strapiResponse', strapiResponse.ok)
-
   const user = await strapiResponse.json()
 
   if (strapiResponse.ok) {
