@@ -51,7 +51,7 @@ export const AuthContextProvider = ({
 
       if (res.ok) {
         setUser(data.user)
-        router.push('/account/dashboard')
+        router.push('/')
       } else {
         setUser(null)
       }
